@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Server backup script, meant to run hourly as a cronjob.
+
+# EDIT THE FOLLOWING VALUES
+
+mc_dir="/home/arian/minecraft-servers/casey-server" # Directory containing target server and rcon-keys directories
+
+server_name="smp1"			# The name that comes after the version number of the server directory
+#mc_version="1.17.1"		# Version of the server, specified in its directory name
+world_name="world"			# World name of the server, specified in the name of its world directory (within the main directory)
+rcon_port=39110
+
+# DO NOT EDIT BELOW THIS LINE
+
+rcon_password=$(cat $mc_dir/rcon-keys/$server_name-key)
+
+cd $(dirname $0)
+
+# Run backup script
+/home/arian/bin/minecraft-backup -c -i "$mc_dir/$server_name-server/$world_name" -o /mnt/minecraft-servers-backup/$server_name-server -s localhost:$rcon_port:$rcon_password -w rcon

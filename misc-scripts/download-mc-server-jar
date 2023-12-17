@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if (( $# >= 2 ))
+then
+	server_type=$1
+	version=$2
+else
+	echo "function requires server type (ex: forge, fabric, paper, purpur) and version"
+	exit 0
+fi
+
+if [[ "$server_type" == "forge" ]]
+then
+	echo "TODO: implement this"
+elif [[ "$server_type" == "fabric" ]]
+then
+	echo "TODO: implement this"
+elif [[ "$server_type" == "paper" ]]
+then
+	echo "paper can't be autodownloaded anymore :("
+	# wget "https://papermc.io/api/v1/paper/${version}/latest/download" -O paper.jar
+elif [[ "$server_type" == "waterfall" ]]
+then
+	echo "waterfall can't be autodownloaded anymore :("
+	#wget "https://papermc.io/api/v1/waterfall/${version}/latest/download" -O waterfall.jar
+elif [[ "$server_type" == "purpur" ]]
+then
+	#wget "https://purpur.pl3x.net/api/v1/purpur/${version}/latest/download" -O purpur.jar
+	wget "https://api.purpurmc.org/v2/purpur/${version}/latest/download" -O purpur.jar
+else
+	echo "Specified server type is not available"
+fi
