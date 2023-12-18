@@ -23,12 +23,18 @@ logging.basicConfig(
 LOGGER = logging.getLogger("image_to_comic_pdf")
 
 
+# NOTE: almost done, just gotta do some finishing touches
 # TODO:
 #   - use typer to polish it up
 #       - also make each "type" of jar a subcommand?
 #   - reduce code duplication (also all papermc projects will have the same implementation)
 
 def save_file(url: str, path: str | Path) -> None:
+    # DEBUG: this is just here until i'm confident everything's working well
+    print(f"download from: {url}")
+    print(f"write file to: {path}")
+    return
+
     with open(path, "wb") as file:
         response = requests.get(url)
         file.write(response.content)
@@ -138,7 +144,9 @@ def main(
             )
         ]
 ):
-    # TODO: un-hardcode input
+    # TODO:
+    #  - un-hardcode input
+    #  - figure out how to handle the fact that mc version is only required when downloading non-proxy jars
     mc_version = "1.20.2"
 
     jar_url = None
@@ -152,8 +160,8 @@ def main(
         case _:
             sys.exit(f"invalid jar type: {jar_type}")
 
-    print(jar_url)
-    # save_file(jar_url, path)
+
+    save_file(jar_url, path)
 
 
 if __name__ == '__main__':
