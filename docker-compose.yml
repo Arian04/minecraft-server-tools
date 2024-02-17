@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  minecraft-server:
+    image: ghcr.io/arian04/minecraft-server:latest # TODO: adjust tag eventually
+    environment:
+      EULA: "true"
+      MEMORY_AMOUNT: "2G"
+    ports:
+      - "25565:25565"
+    volumes:
+      - server-data:/data
+
+  minecraft-backups:
+    image: ghcr.io/arian04/minecraft-server-backup:latest # TODO: adjust tag eventually
+    volumes:
+      - server-data:/data:ro
+      - ./backups:/backups
+
+volumes:
+  server-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./data
+      o: bind
