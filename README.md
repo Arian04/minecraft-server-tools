@@ -9,7 +9,7 @@ More comprehensive tools exist, but I wanted something much more minimal.
 
 ## TODO
 
-- [ ] basic Dockerfile
+- [X] basic Dockerfile
     - figure out how to handle initialization of container vs just running it
         - init minecraft files
         - create borg repo
