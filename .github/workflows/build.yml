@@ -36,8 +36,11 @@ jobs:
         uses: docker/metadata-action@v5.5.1
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=auto
+            prefix=${{ matrix.mc_jar_type }}-${{ matrix.mc_version }}
           tags: |
-            type=raw,value=${{ matrix.config.mc_jar_type }}-${{ matrix.config.mc_version }}
+            type=raw,value={{date 'YYYY-MM-DD'}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5.1.0
@@ -47,5 +50,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            MC_JAR_TYPE=${{ matrix.config.mc_jar_type }}
-            MC_VERSION=${{ matrix.config.mc_version }}
+            MC_JAR_TYPE=${{ matrix.mc_jar_type }}
+            MC_VERSION=${{ matrix.mc_version }}
