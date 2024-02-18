@@ -5,9 +5,6 @@ ARG BUILDER_IMAGE_TAG
 ARG RUNNER_IMAGE
 ARG RUNNER_IMAGE_TAG
 
-ARG MC_JAR_TYPE
-ARG MC_VERSION
-
 # TODO: lots of hardcoded paths, I wonder if there's a standard way that people handle that issue
 
 ##### Build #####
@@ -16,7 +13,10 @@ FROM ${BUILDER_IMAGE}:${BUILDER_IMAGE_TAG} AS build
 
 WORKDIR /build
 
-COPY ./misc-scripts/get-mc-jar .
+ARG MC_JAR_TYPE
+ARG MC_VERSION
+
+COPY ./build/get-mc-jar .
 RUN pip install --no-cache-dir -r ./requirements.txt
 RUN ./get-mc-jar.py ${MC_JAR_TYPE} server.jar ${MC_VERSION}
 
@@ -35,11 +35,12 @@ RUN \
 USER ${SERVICE_NAME}
 
 # Copy over scripts
-ARG MC_BIN_DIR="mc-bin"
-ENV PATH="${PATH}:/${MC_BIN_DIR}"
-WORKDIR /${MC_BIN_DIR}
-COPY --chown=${SERVICE_NAME}:${SERVICE_NAME} --chmod=500 ./misc-scripts/start.sh .
-COPY --chown=${SERVICE_NAME}:${SERVICE_NAME} --chmod=500 ./misc-scripts/prepare.py .
+ARG MC_BIN_DIR="/mc-bin"
+ENV PATH="${PATH}:${MC_BIN_DIR}"
+WORKDIR ${MC_BIN_DIR}
+COPY --chown=${SERVICE_NAME}:${SERVICE_NAME} --chmod=500 ./runtime/start.sh .
+COPY --chown=${SERVICE_NAME}:${SERVICE_NAME} --chmod=500 ./runtime/prepare.py .
+COPY --chown=${SERVICE_NAME}:${SERVICE_NAME} --chmod=500 ./runtime/server-start.sh .
 
 # TODO:
 # - copy things into image / run scripts that edit config files ???
@@ -62,6 +63,6 @@ EXPOSE 25565
 
 ENV JAR_NAME=server.jar MEMORY_AMOUNT="" EULA=""
 
-ENTRYPOINT [ "/bin/start.sh" ]
+ENTRYPOINT [ "/mc-bin/start.sh" ]
 
 # TODO:set up healthcheck?
