@@ -12,7 +12,7 @@ More comprehensive tools exist, but I wanted something much more minimal.
 - [X] basic Dockerfile
     - figure out how to handle initialization of container vs just running it
         - init minecraft files
-        - create borg repo
+        - create Borg repo
 - scripts
     - mc jar downloader
         - jar support
@@ -29,3 +29,5 @@ More comprehensive tools exist, but I wanted something much more minimal.
         - [x] clean up old script and make it take arguments
         - [ ] test it
         - [ ] make sure it writes to a directory that is intended to be exposed as a volume on the container host
+
+- [ ] reduce duplication of build args between CI and docker-compose build files

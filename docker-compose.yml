@@ -2,10 +2,11 @@ version: "3"
 
 services:
   minecraft-server:
-    image: ghcr.io/arian04/minecraft-server:latest # TODO: adjust tag eventually
+    image: ghcr.io/arian04/minecraft-server:fabric-1.20.4
     environment:
-      EULA: "true"
+      EULA: true
       MEMORY_AMOUNT: "2G"
+      ENABLE_RCON: true
     ports:
       - "25565:25565"
     volumes:
