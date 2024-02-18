@@ -1,8 +1,13 @@
 # syntax = docker/dockerfile:1
 
+ARG BUILDER_IMAGE
+ARG BUILDER_IMAGE_TAG
+ARG RUNNER_IMAGE
+ARG RUNNER_IMAGE_TAG
+
 ##### Build #####
 # build rcon client from source
-FROM alpine:3.19 AS build
+FROM ${BUILDER_IMAGE}:${BUILDER_IMAGE_TAG} AS build
 
 ARG GIT_REPO_URL="https://github.com/Tiiffi/mcrcon"
 ARG COMMIT_SHA="b5951e96349ec2ecf72b468459fc503a7067ba1f"
@@ -31,9 +36,9 @@ RUN \
 	mv ./mcrcon ../
 
 ##### Runtime #####
-FROM alpine:3.19
+FROM ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG}
 
-COPY --from=build --chmod=555 /src/mcrcon /usr/bin/mcrcon
+COPY --from=build --chmod=555 /src/mcrcon /bin/mcrcon
 
 RUN apk add --no-cache borgbackup=1.2.7-r0
 
