@@ -106,6 +106,6 @@ if __name__ == "__main__":
         datefmt="[%X]",
     )
     LOGGER = logging.getLogger("mc_server_properties_editor")
-    SERVER_DIRECTORY = "."
+    SERVER_DIRECTORY = "/data"
 
     main()
