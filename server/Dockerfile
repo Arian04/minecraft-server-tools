@@ -23,8 +23,9 @@ RUN ./get-mc-jar.py ${MC_JAR_TYPE} server.jar ${MC_VERSION}
 ##### Runtime #####
 FROM ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG}
 
-# Minecraft warns when udev isn't available. Not sure what actually happens if it's missing though.
-RUN apk add --no-cache udev
+# udev - Minecraft warns when it isn't available. Not sure what actually happens if it's missing though.
+# python3 - for running some of my scripts
+RUN apk add --no-cache udev python3
 
 # create non-root user and switch to it
 ENV SERVICE_NAME="minecraft"
@@ -35,22 +36,12 @@ RUN \
 USER ${SERVICE_NAME}
 
 # Copy over scripts
-ARG MC_BIN_DIR="/mc-bin"
+ENV MC_BIN_DIR="/mc-bin"
 ENV PATH="${PATH}:${MC_BIN_DIR}"
 WORKDIR ${MC_BIN_DIR}
 COPY --chown=${SERVICE_NAME}:${SERVICE_NAME} --chmod=500 ./runtime/start.sh .
 COPY --chown=${SERVICE_NAME}:${SERVICE_NAME} --chmod=500 ./runtime/prepare.py .
 COPY --chown=${SERVICE_NAME}:${SERVICE_NAME} --chmod=500 ./runtime/server-start.sh .
-
-# TODO:
-# - copy things into image / run scripts that edit config files ???
-# - should I put the entrypoint server start script somewhere that isn't gonna be mounted as a volume?
-# 	but I don't want it to be excluded from server backups or hard to update
-# 		- maybe a compromise could be making a pre-start script that will just properly alert the
-# 		  user if the actual server start script is inaccessible or un-executable for any reason
-# 		- I have decided that it doesn't matter at all if the start script is excluded from backups
-# 		  since they still have the jar and can make their own start script using the docker-compose
-# 		  file env vars or just on their own. the jar is the important thing.
 
 WORKDIR /data
 COPY --from=build --chown=${SERVICE_NAME}:${SERVICE_NAME} /build/server.jar .
