@@ -15,7 +15,7 @@ def set_eula():
     EULA_VAR_NAME = "EULA"
     EULA_FILE_NAME = "eula.txt"
     if os.environ.get(EULA_VAR_NAME):
-        with open(f"{SERVER_DIRECTORY}/{EULA_FILE_NAME}", "r") as file:
+        with open(f"{SERVER_DIRECTORY}/{EULA_FILE_NAME}", "w") as file:
             file.write(f"eula=true")
     else:
         LOGGER.error("You must accept the Minecraft EULA before being able to run the server")
