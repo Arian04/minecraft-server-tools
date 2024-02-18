@@ -50,5 +50,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
+            BUILDER_IMAGE=python
+            BUILDER_IMAGE_TAG=alpine3.19
+            RUNNER_IMAGE=eclipse-temurin
+            RUNNER_IMAGE_TAG=17-jre-alpine
             MC_JAR_TYPE=${{ matrix.mc_jar_type }}
             MC_VERSION=${{ matrix.mc_version }}
