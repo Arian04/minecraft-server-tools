@@ -22,8 +22,9 @@ More comprehensive tools exist, but I wanted something much more minimal.
             - [X] Velocity (proxy)
             - [ ] Waterfall (proxy)
         - [ ] Clean up the script a bit
-    - [ ] substitute env vars provided to container into appropriate config files
-        - TODO: make list of files here
+    - substitute env vars provided to container into appropriate config files
+		- [X] server.properties
+        - TODO: make list of other files here
     - backups
         - [x] clean up old script and make it take arguments
         - [ ] test it

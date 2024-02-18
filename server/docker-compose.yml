@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  build_binary:
+    image: ghcr.io/arian04/minecraft-server:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        # image
+        BUILDER_IMAGE: python
+        BUILDER_IMAGE_TAG: alpine3.19
+        RUNNER_IMAGE: eclipse-temurin
+        RUNNER_IMAGE_TAG: 17-jre-alpine
+        # minecraft
+        MC_JAR_TYPE: fabric
+        MC_VERSION: 1.20.4
