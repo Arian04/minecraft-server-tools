@@ -24,4 +24,4 @@ jvm_args="${base_args} ${gc_args} ${extra_args}"
 
 # start server
 # shellcheck disable=SC2086 # jvm_args word-splitting is intentional
-java "-Xms${MEMORY_AMOUNT}" "-Xmx${MEMORY_AMOUNT}" ${jvm_args} --add-modules=jdk.incubator.vector -jar "${JAR_NAME}" nogui
+exec java "-Xms${MEMORY_AMOUNT}" "-Xmx${MEMORY_AMOUNT}" ${jvm_args} --add-modules=jdk.incubator.vector -jar "${JAR_NAME}" nogui

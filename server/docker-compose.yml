@@ -2,7 +2,7 @@ version: "3"
 
 services:
   build_binary:
-    image: ghcr.io/arian04/minecraft-server:latest
+    image: ghcr.io/arian04/minecraft-server:$MC_JAR_TYPE-$MC_VERSION
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -13,5 +13,5 @@ services:
         RUNNER_IMAGE: eclipse-temurin
         RUNNER_IMAGE_TAG: 17-jre-alpine
         # minecraft
-        MC_JAR_TYPE: fabric
-        MC_VERSION: 1.20.4
+        MC_JAR_TYPE: $MC_JAR_TYPE
+        MC_VERSION: $MC_VERSION

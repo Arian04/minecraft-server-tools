@@ -76,15 +76,22 @@ def set_server_properties():
         if matches is None:
             LOGGER.error("somethings wrong, config line didn't match")
             continue
-        key = matches.group(1)
-        value = matches.group(2)
-        LOGGER.debug(f"found (key, value): ({key}, {value})")
+        property_name = matches.group(1)
+        property_value = matches.group(2)
+        LOGGER.debug(f"found (key, value): ({property_name}, {property_value})")
 
-        env_var_name = property_to_env_var(key)
-        env_var = os.environ.get(env_var_name)
-        if env_var is not None:
-            LOGGER.info(f"{env_var_name} is set to {env_var}, setting property accordingly.")
-            properties[i] = property_regex.sub(r"\1=" + f"{env_var}", line)
+        env_var_name = property_to_env_var(property_name)
+        env_var_value = os.environ.get(env_var_name)
+        if env_var_value is not None:
+            LOGGER.info(f"{env_var_name} is set to {env_var_value}")
+
+            if property_value == env_var_value:
+                LOGGER.info(f"{property_name} is already set to desired value, leaving it as-is.")
+                pass
+            else:
+                LOGGER.info(f'setting {property_name} from value of "{property_value}" to "{env_var_value}" ')
+
+            properties[i] = property_regex.sub(r"\1=" + f"{env_var_value}", line)
 
     # Writes all properties to file
     with open(f"{SERVER_PROPERTIES_FILE}", "w") as file:
@@ -100,8 +107,8 @@ def main():
 
 if __name__ == "__main__":
     logging.basicConfig(
-        # level="WARN",
-        level="DEBUG",
+        level="INFO",
+        # level="DEBUG",
         format=" %(name)s :: %(levelname)-8s :: %(message)s",
         datefmt="[%X]",
     )

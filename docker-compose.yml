@@ -3,6 +3,10 @@ version: "3"
 services:
   minecraft-server:
     image: ghcr.io/arian04/minecraft-server:fabric-1.20.4
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 120s
+    user: "1000:1000"
     environment:
       EULA: true
       MEMORY_AMOUNT: "2G"
@@ -14,6 +18,10 @@ services:
 
   minecraft-backups:
     image: ghcr.io/arian04/minecraft-server-backup:latest # TODO: adjust tag eventually
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 60s
+    #user: "1000:1000"
     volumes:
       - ./data:/data:ro # make sure this matches the server's volume above
-      - ./backups:/backups
+      - ./server-backups:/backups

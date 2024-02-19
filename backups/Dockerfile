@@ -38,7 +38,7 @@ RUN \
 ##### Runtime #####
 FROM ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG}
 
-COPY --from=build --chmod=555 /src/mcrcon /bin/mcrcon
+COPY --from=build --chmod=555 /src/mcrcon /bin
 
 RUN apk add --no-cache borgbackup=1.2.7-r0
 
