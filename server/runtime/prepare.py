@@ -83,15 +83,20 @@ def set_server_properties():
         env_var_name = property_to_env_var(property_name)
         env_var_value = os.environ.get(env_var_name)
         if env_var_value is not None:
-            LOGGER.info(f"{env_var_name} is set to {env_var_value}")
+            # Don't log secrets
+            if env_var_name == "RCON_PASSWORD":
+                LOGGER.info(f"{env_var_name} is set. Intentionally excluding sensitive value from logs.")
+            else:
+                LOGGER.info(f"{env_var_name} is set to {env_var_value}")
 
             if property_value == env_var_value:
                 LOGGER.info(f"{property_name} is already set to desired value, leaving it as-is.")
-                pass
             else:
-                LOGGER.info(f'setting {property_name} from value of "{property_value}" to "{env_var_value}" ')
-
-            properties[i] = property_regex.sub(r"\1=" + f"{env_var_value}", line)
+                LOGGER.info(
+                    f'changing {property_name} from value of "{property_value}" to the value set in'
+                    f" {env_var_name}"
+                )
+                properties[i] = property_regex.sub(r"\1=" + f"{env_var_value}", line)
 
     # Writes all properties to file
     with open(f"{SERVER_PROPERTIES_FILE}", "w") as file:
