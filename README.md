@@ -3,7 +3,7 @@
 This repo includes various tools I use for hosting containerized minecraft servers.
 More comprehensive tools exist, but I wanted something much more minimal.
 
-NOTE: currently a WIP, significant features are missing, and it's not tested very thoroughly
+NOTE: currently in active development. It *should* work pretty well, but I'm not using it in "production" yet and it's not tested very thoroughly.
 
 ## Features
 
