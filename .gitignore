@@ -2,5 +2,5 @@
 venv/
 
 # directories used while testing the container
-data
-server-backups
+examples/data
+examples/backups

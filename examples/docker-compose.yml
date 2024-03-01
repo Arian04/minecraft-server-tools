@@ -27,4 +27,4 @@ services:
       RCON_TARGET: minecraft-server # must match the service name of the server container above
     volumes:
       - ./data:/data:ro # make sure this matches the server's volume above
-      - ./server-backups:/backups
+      - ./backups:/backups
