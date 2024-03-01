@@ -40,7 +40,9 @@ FROM ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG}
 
 COPY --from=build --chmod=555 /src/mcrcon /bin
 
-RUN apk add --no-cache borgbackup=1.2.7-r0
+# tini - init
+# borgbackup - backup software
+RUN apk add --no-cache tini borgbackup=1.2.7-r0
 
 # create non-root user and switch to it
 # ENV SERVICE_NAME="minecraft"
@@ -57,4 +59,5 @@ VOLUME [ "/data" ]
 VOLUME [ "/backups" ]
 WORKDIR /backups
 
-ENTRYPOINT [ "crond", "-f", "-d6", "-l8" ]
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD [ "crond", "-f", "-d6", "-l8" ]

@@ -48,9 +48,10 @@ RUN echo stop | java "-Xmx${MEMORY_AMOUNT}" -jar "${JAR_NAME}"
 ##### Runtime #####
 FROM ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG}
 
-# udev - Minecraft warns when it isn't available. Not sure what actually happens if it's missing though.
+# tini - init
 # python3 - for running some of my scripts
-RUN apk add --no-cache udev python3
+# udev - Minecraft warns when it isn't available. Not sure what actually happens if it's missing though.
+RUN apk add --no-cache tini python3 udev
 
 
 # TODO: figure out how to un-hardcode this to work with UID/GID other than 1000
@@ -100,8 +101,11 @@ ENV \
 # For users to override
 ENV MEMORY_AMOUNT="" EULA=""
 
+# set tini as PID 1 to avoid issues with signal propagation to child processes
+ENTRYPOINT ["/sbin/tini", "--"]
+
 # substituting $MC_BIN_DIR into here causes too many problems, so just remember to manually update
 # this if $MC_BIN_DIR ever changes
-ENTRYPOINT [ "/mc-bin/start.sh" ]
+CMD [ "/mc-bin/start.sh" ]
 
 # TODO:set up healthcheck?
