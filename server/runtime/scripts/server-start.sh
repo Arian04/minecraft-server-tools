@@ -21,9 +21,13 @@ gc_args='-XX:+UseG1GC -XX:MaxGCPauseMillis=130 -XX:+UnlockExperimentalVMOptions 
 # args that I added because I personally think they help
 extra_args='-XX:+UseTransparentHugePages'
 
-jvm_args="${base_args} ${gc_args} ${extra_args}"
+logging_args="-Dlog4j.configurationFile=${LOG4J_CONF_FILE}"
+
+module_args="--add-modules=jdk.incubator.vector"
+
+jvm_args="${logging_args} ${module_args} ${base_args} ${gc_args} ${extra_args}"
 # ----------------
 
 # start server
-# shellcheck disable=SC2086 # jvm_args word-splitting is intentional
-exec java "-Xms${MEMORY_AMOUNT}" "-Xmx${MEMORY_AMOUNT}" -Dlog4j.configurationFile=${LOG4J_CONF_FILE} ${jvm_args} --add-modules=jdk.incubator.vector -jar "${JAR_NAME}" nogui
+# shellcheck disable=SC2086 # ${jvm_args} word-splitting is intentional
+exec java "-Xms${MEMORY_AMOUNT}" "-Xmx${MEMORY_AMOUNT}" ${jvm_args} -jar "${JAR_NAME}" nogui
