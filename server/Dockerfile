@@ -12,8 +12,6 @@ ARG SERVER_DATA_DIR=/data
 ARG MC_BIN_DIR=/mc-bin
 ARG JAR_NAME=server.jar
 
-# TODO: lots of hardcoded paths, I wonder if there's a standard way that people handle that issue
-
 ##### Get jar file #####
 # uses my script to download the required jar file
 FROM ${BUILDER_IMAGE}:${BUILDER_IMAGE_TAG} AS builder_jar
@@ -79,12 +77,12 @@ ARG SERVER_DATA_DIR
 VOLUME ${SERVER_DATA_DIR}
 VOLUME [ "/backups" ]
 
-# No real purpose for this, but it seems reasonable
+# No real purpose for this, but it seems like a reasonable CWD if someone ever `docker exec`s or something
 WORKDIR ${SERVER_DATA_DIR}
 
 STOPSIGNAL SIGTERM
 
-# MC and RCON ports respectively
+# expose MC and RCON ports respectively
 EXPOSE 25565
 EXPOSE 25575
 
