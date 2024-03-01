@@ -3,28 +3,28 @@ version: "3"
 services:
   minecraft-server:
     image: ghcr.io/arian04/minecraft-server:fabric-1.20.4
-    init: true
-    restart: unless-stopped
-    stop_grace_period: 120s
     user: "1000:1000"
     environment:
       EULA: true
       MEMORY_AMOUNT: "2G"
-      ENABLE_RCON: true
+      ENABLE_RCON: true # mandatory for backups to work
     ports:
       - "25565:25565"
       - "25575:25575"
     volumes:
       - ./data:/data
+    init: true
+    stop_grace_period: 120s
+    restart: unless-stopped
 
   minecraft-backups:
     image: ghcr.io/arian04/minecraft-server-backup:latest # TODO: adjust tag eventually
-    init: true
-    restart: unless-stopped
-    stop_grace_period: 60s
     #user: "1000:1000"
     environment:
       RCON_TARGET: minecraft-server # must match the service name of the server container above
     volumes:
       - ./data:/data:ro # make sure this matches the server's volume above
       - ./backups:/backups
+    init: true
+    stop_grace_period: 60s
+    restart: unless-stopped
