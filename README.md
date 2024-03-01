@@ -3,7 +3,7 @@
 This repo includes various tools I use for hosting containerized minecraft servers.
 More comprehensive tools exist, but I wanted something much more minimal.
 
-NOTE: currently in active development. It *should* work pretty well, but I'm not using it in "production" yet and it's not tested very thoroughly.
+**NOTE: currently in active development. It *should* work pretty well, but I'm not using it in "production" yet and it's not tested very thoroughly.**
 
 ## Features
 
@@ -14,4 +14,4 @@ NOTE: currently in active development. It *should* work pretty well, but I'm not
 	- easier to move the MC server(s) to a different host if necessary, since dependencies are packaged nicely into the container image
 - server.properties is changed using simple environment variables, rather than having to manually change it
 - simple incremental, compressed, and deduplicated backups via Borg by simply running a second lightweight container alongside the main server
-- provided example docker-compose.yml makes it easy to get started
+- provided [example docker-compose.yml](examples/docker-compose.yml) makes it easy to get started

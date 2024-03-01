@@ -14,7 +14,9 @@
         - TODO: make list of other files here
     - backups
         - [x] clean up old script and make it take arguments
-        - [ ] test it
+        - [x] test it
 
-- [ ] reduce duplication of build args between CI and docker-compose build files
-
+- other
+	- [ ] reduce duplication of build args between CI and docker-compose build files
+	- [ ] make backup container not run as root
+	- [ ] make UID/GID more flexible and just generally address permission weirdness
