@@ -5,14 +5,17 @@ services:
     image: ghcr.io/arian04/minecraft-server:fabric-1.20.4
     user: "1000:1000"
     environment:
-      EULA: true
-      MEMORY_AMOUNT: "2G"
+      EULA: true # you must accept Minecraft's EULA to run the server at all
       ENABLE_RCON: true # mandatory for backups to work
+      #RCON_PASSWORD: EXAMPLE_PASSWORD # either set this or a strong password will be generated each time the container starts
+      MEMORY_AMOUNT: "2G"
+    networks:
+      - minecraft
     ports:
       - "25565:25565"
       - "25575:25575"
     volumes:
-      - ./data:/data
+      - server-data:/data
     stop_grace_period: 120s
     restart: unless-stopped
 
@@ -21,8 +24,17 @@ services:
     #user: "1000:1000"
     environment:
       RCON_TARGET: minecraft-server # must match the service name of the server container above
+    networks:
+      - minecraft
     volumes:
-      - ./data:/data:ro # make sure this matches the server's volume above
-      - ./backups:/backups
+      - server-data:/data:ro
+      - server-backups:/backups
     stop_grace_period: 60s
     restart: unless-stopped
+
+volumes:
+  server-data:
+  server-backups:
+
+networks:
+  minecraft:
