@@ -1,2 +1,6 @@
 .idea/
 venv/
+
+# directories used while testing the container
+data
+server-backups
