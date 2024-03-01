@@ -66,13 +66,14 @@ USER ${SERVICE_NAME}
 ARG MC_BIN_DIR
 ENV PATH="${PATH}:${MC_BIN_DIR}"
 WORKDIR ${MC_BIN_DIR}
-COPY --chown=${SERVICE_NAME}:${SERVICE_NAME} --chmod=500 ./runtime/* .
+COPY --chown=${SERVICE_NAME}:${SERVICE_NAME} --chmod=500 ./runtime/scripts/* .
 
 ARG GENERATED_DATA_DIR
 ARG JAR_NAME
 WORKDIR ${GENERATED_DATA_DIR}
 COPY --from=builder_jar --chown=${SERVICE_NAME}:${SERVICE_NAME} /build/${JAR_NAME} .
 COPY --from=builder_config --chown=${SERVICE_NAME}:${SERVICE_NAME} /build/server.properties .
+COPY ./runtime/files/log4j2.xml .
 
 ARG SERVER_DATA_DIR
 VOLUME ${SERVER_DATA_DIR}

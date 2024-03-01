@@ -9,7 +9,9 @@
 
 # TODO: refactor so that you can easily override JVM args as a user of the container
 
-# JVM args
+LOG4J_CONF_FILE="log4j2.xml"
+
+# Performance JVM args
 # Source: https://github.com/brucethemoose/Minecraft-Performance-Flags-Benchmarks
 base_args='-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+AlwaysActAsServerClassMachine -XX:+AlwaysPreTouch -XX:+DisableExplicitGC -XX:+UseNUMA -XX:NmethodSweepActivity=1 -XX:ReservedCodeCacheSize=400M -XX:NonNMethodCodeHeapSize=12M -XX:ProfiledCodeHeapSize=194M -XX:NonProfiledCodeHeapSize=194M -XX:-DontCompileHugeMethods -XX:MaxNodeLimit=240000 -XX:NodeLimitFudgeFactor=8000 -XX:+UseVectorCmov -XX:+PerfDisableSharedMem -XX:+UseFastUnorderedTimeStamps -XX:+UseCriticalJavaThreadPriority -XX:ThreadPriorityPolicy=1 -XX:AllocatePrefetchStyle=3'
 
@@ -24,4 +26,4 @@ jvm_args="${base_args} ${gc_args} ${extra_args}"
 
 # start server
 # shellcheck disable=SC2086 # jvm_args word-splitting is intentional
-exec java "-Xms${MEMORY_AMOUNT}" "-Xmx${MEMORY_AMOUNT}" ${jvm_args} --add-modules=jdk.incubator.vector -jar "${JAR_NAME}" nogui
+exec java "-Xms${MEMORY_AMOUNT}" "-Xmx${MEMORY_AMOUNT}" -Dlog4j.configurationFile=${LOG4J_CONF_FILE} ${jvm_args} --add-modules=jdk.incubator.vector -jar "${JAR_NAME}" nogui

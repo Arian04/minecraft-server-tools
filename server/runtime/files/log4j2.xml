@@ -1,0 +1,2 @@
+TODO: find a way to grab the true default log4j config or pass modified config options, rather
+	  than fully overriding the defaults. I only wanna change a few things, not override it all.
