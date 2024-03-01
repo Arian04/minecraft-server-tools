@@ -13,6 +13,7 @@ services:
       ENABLE_RCON: true
     ports:
       - "25565:25565"
+      - "25575:25575"
     volumes:
       - ./data:/data
 
@@ -22,6 +23,8 @@ services:
     restart: unless-stopped
     stop_grace_period: 60s
     #user: "1000:1000"
+    environment:
+      RCON_TARGET: minecraft-server # must match the service name of the server container above
     volumes:
       - ./data:/data:ro # make sure this matches the server's volume above
       - ./server-backups:/backups
