@@ -42,6 +42,7 @@ COPY --from=builder_jar /build/${JAR_NAME} .
 RUN echo "eula=${EULA}" >> ./eula.txt
 
 # Run minecraft server and immediately send "stop" to stdin, stopping the server ASAP
+SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 RUN echo stop | java "-Xmx${MEMORY_AMOUNT}" -jar "${JAR_NAME}"
 
 ##### Runtime #####
