@@ -84,10 +84,13 @@ def set_server_properties():
         env_var_value = os.environ.get(env_var_name)
         if env_var_value is not None:
             # Don't log secrets
-            if env_var_name == "RCON_PASSWORD":
-                LOGGER.info(f"{env_var_name} is set. Intentionally excluding sensitive value from logs.")
-            else:
-                LOGGER.info(f"{env_var_name} is set to {env_var_value}")
+            env_var_value_log = env_var_value
+            SECRET_VAR_LIST = {"RCON_PASSWORD"}
+            if env_var_name in SECRET_VAR_LIST:
+                env_var_value_log = "[redacted new RCON password here]"
+                property_value = "[redacted old RCON password here]"
+
+            LOGGER.info(f"{env_var_name} is set to {env_var_value_log}")
 
             if property_value == env_var_value:
                 LOGGER.info(f"{property_name} is already set to desired value, leaving it as-is.")
