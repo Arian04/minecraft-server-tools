@@ -9,7 +9,7 @@ import typer
 from rich.logging import RichHandler
 from typing_extensions import Annotated
 
-# NOTE: yea yea, I know it's bloated, but Typer and Rich are nice and sometimes i wanna run this interactively.
+# NOTE: yea yea, I know it's bloated, but Typer and Rich are nice and sometimes I wanna run this interactively.
 
 # Set up application and logging
 app = typer.Typer(
@@ -25,10 +25,14 @@ logging.basicConfig(
     handlers=[RichHandler()],
 )
 LOGGER = logging.getLogger("mc_jar_downloader")
-LATEST_MC_VERSION = "1.20.4"  # default version to download
 
+# The reason I'm hardcoding the latest stable MC version and not the latest proxy version is because the proxy versions
+# should (I believe) work for any backend mc server version, but blindly grabbing the latest Minecraft version wouldn't
+# be the best idea due to how much could break (mods/plugins, farms, etc.)
+LATEST_MC_VERSION = "1.20.4"
 
-# TODO: slight code duplication between each "server" jar and each "proxy" jar (args are the same)
+# I'm only using this as an indicator to know when to find the latest version at runtime
+LATEST_PROXY_VERSION = "latest"
 
 
 # ----- Helper Functions -----
@@ -56,7 +60,7 @@ def get_json(url: str):
     json_data = response.json()
 
     if not json_data:
-        LOGGER.error("uh oh i think something bad happened")
+        LOGGER.error("uh oh, this is NOT json data")
         sys.exit(1)
 
     return json_data
@@ -93,6 +97,7 @@ def fabric(
 
     jar_url = f"{API_ENDPOINT}/versions/loader/{mc_version}/{loader_version}/{installer_version}/server/jar"
     save_file(jar_url, path)
+    return 0
 
 
 @app.command()
@@ -112,9 +117,27 @@ def purpur(
 
 
 @app.command()
+def paper(
+    path: Annotated[Path, typer.Argument(show_default=False, exists=False)],
+    mc_version: Annotated[str, typer.Argument(show_default=False)] = LATEST_MC_VERSION,
+) -> int:
+    PROJECT = "paper"
+    return papermc(PROJECT, path, mc_version)
+
+
+@app.command()
+def waterfall(
+    path: Annotated[Path, typer.Argument(show_default=False, exists=False)],
+    proxy_version: Annotated[str, typer.Argument()] = LATEST_PROXY_VERSION,
+) -> int:
+    PROJECT = "waterfall"
+    return papermc(PROJECT, path, proxy_version)
+
+
+@app.command()
 def velocity(
     path: Annotated[Path, typer.Argument(show_default=False, exists=False)],
-    proxy_version: Annotated[Optional[str], typer.Argument()] = "latest",
+    proxy_version: Annotated[str, typer.Argument()] = LATEST_PROXY_VERSION,
 ) -> int:
     PROJECT = "velocity"
     return papermc(PROJECT, path, proxy_version)
@@ -124,23 +147,26 @@ def velocity(
 def papermc(project: str, output_path: Path, version: str) -> int:
     API_ENDPOINT = "https://api.papermc.io/v2"
 
-    # TODO: finish this
     PROXIES = {"velocity", "waterfall"}
-    if project in PROXIES:
-        # validate proxy version differently if given???
-        pass
+    if project in PROXIES and version is LATEST_PROXY_VERSION:
+        # turn LATEST_PROXY_VERSION constant into the actual latest version
+        json_response = get_json(f"{API_ENDPOINT}/projects/{project}")
+        json_response = json_response["versions"]  # grab versions list
+        latest_version = json_response[-1]  # get the last element (latest version)
+        version = latest_version  # set desired version to latest version
     else:
-        # do some mc version arg validation
-        pass
+        # Check that the version is available
+        json_response = get_json(f"{API_ENDPOINT}/projects/{project}")
+        json_response = json_response["versions"]  # we only care about the versions list
+        if version not in json_response:
+            LOGGER.error(f"version '{version}' is not available :(")
+            return 1
 
-    # Get latest version group
-    json_response = get_json(f"{API_ENDPOINT}/projects/{project}")
-    json_response = json_response["version_groups"]  # we only care about the version groups
-    latest_version_group = json_response[-1]  # get the last element (latest version group)
-
-    # Get latest non-experimental (stable) build
+    # Get latest non-experimental (stable) build for the given version
     build_json = None
-    json_response = get_json(f"{API_ENDPOINT}/projects/{project}/version_group/{latest_version_group}/builds")
+    json_response = get_json(f"{API_ENDPOINT}/projects/{project}/versions/{version}/builds")
+
+    # Reverse the list because they provide it in "oldest first" order
     for obj in reversed(json_response["builds"]):
         if obj["channel"] == "default":
             build_json = obj
@@ -150,10 +176,9 @@ def papermc(project: str, output_path: Path, version: str) -> int:
         LOGGER.error("failed to find a stable build")
         return 1
 
-    version = build_json["version"]
     build_number = build_json["build"]
     jar_name = build_json["downloads"]["application"]["name"]
-    # jar_sha256 = build_json['downloads']['application']['sha256']
+    # jar_sha256 = build_json['downloads']['application']['sha256'] # TODO: implement checksum verification
 
     jar_url = (
         f"{API_ENDPOINT}/projects/{project}/versions/{version}/builds/{build_number}/downloads/{jar_name}"
