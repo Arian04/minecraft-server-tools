@@ -9,8 +9,6 @@
 
 # TODO: refactor so that you can easily override JVM args as a user of the container
 
-LOG4J_CONF_FILE="log4j2.xml"
-
 # Performance JVM args
 # Source: https://github.com/brucethemoose/Minecraft-Performance-Flags-Benchmarks
 base_args='-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+AlwaysActAsServerClassMachine -XX:+AlwaysPreTouch -XX:+DisableExplicitGC -XX:+UseNUMA -XX:NmethodSweepActivity=1 -XX:ReservedCodeCacheSize=400M -XX:NonNMethodCodeHeapSize=12M -XX:ProfiledCodeHeapSize=194M -XX:NonProfiledCodeHeapSize=194M -XX:-DontCompileHugeMethods -XX:MaxNodeLimit=240000 -XX:NodeLimitFudgeFactor=8000 -XX:+UseVectorCmov -XX:+PerfDisableSharedMem -XX:+UseFastUnorderedTimeStamps -XX:+UseCriticalJavaThreadPriority -XX:ThreadPriorityPolicy=1 -XX:AllocatePrefetchStyle=3'
@@ -21,11 +19,9 @@ gc_args='-XX:+UseG1GC -XX:MaxGCPauseMillis=130 -XX:+UnlockExperimentalVMOptions 
 # args that I added because I personally think they help
 extra_args='-XX:+UseTransparentHugePages'
 
-logging_args="-Dlog4j.configurationFile=${LOG4J_CONF_FILE}"
-
 module_args="--add-modules=jdk.incubator.vector"
 
-jvm_args="${logging_args} ${module_args} ${base_args} ${gc_args} ${extra_args}"
+jvm_args="${module_args} ${base_args} ${gc_args} ${extra_args}"
 # ----------------
 
 # start server

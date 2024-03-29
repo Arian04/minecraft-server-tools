@@ -74,7 +74,6 @@ ARG JAR_NAME
 WORKDIR ${GENERATED_DATA_DIR}
 COPY --from=builder_jar --chown=${SERVICE_NAME}:${SERVICE_NAME} /build/${JAR_NAME} .
 COPY --from=builder_config --chown=${SERVICE_NAME}:${SERVICE_NAME} /build/server.properties .
-COPY ./runtime/files/log4j2.xml .
 
 ARG SERVER_DATA_DIR
 VOLUME ${SERVER_DATA_DIR}
