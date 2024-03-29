@@ -8,7 +8,7 @@ copy_if_missing() {
 	FILENAME="${1}"
 
 	if [ ! -e "$DEST/$FILENAME" ]; then
-		echo "jar doesnt exist in server data dir"
+		echo "file doesnt exist in server data dir"
 
 		cp "$SRC/$FILENAME" "$DEST"
 		return 1
