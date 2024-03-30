@@ -37,7 +37,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=${{ matrix.mc_jar_type }}-${{ matrix.mc_version }}
+            type=raw,value=${{ matrix.mc_jar_type }}-${{ matrix.mc_version }}-latest
             type=raw,value=${{ matrix.mc_jar_type }}-${{ matrix.mc_version }}-{{sha}}
 
       - name: Build and push Docker image
