@@ -2,7 +2,7 @@ version: "3"
 
 services:
   minecraft-server:
-    image: ghcr.io/arian04/minecraft-server:fabric-1.20.4
+    image: ghcr.io/arian04/minecraft-server:fabric-1.20.4-latest
     user: "1000:1000"
     environment:
       EULA: true # you must accept Minecraft's EULA to run the server at all
