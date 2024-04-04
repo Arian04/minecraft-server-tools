@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   build_binary:
     image: ghcr.io/arian04/minecraft-server-backup:latest
