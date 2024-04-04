@@ -45,7 +45,8 @@ do_all_checks() {
 main() {
 	do_all_checks "$JAR_NAME"
 
-	# I'm gonna let the preparation script handle whether or not server.properties is different
+	# Not doing all checks for `server.properties`, because I'm gonna let the preparation script handle it.
+	# Otherwise this would always just report that it doesn't match the default `server.properties`.
 	copy_if_missing "server.properties"
 }
 
