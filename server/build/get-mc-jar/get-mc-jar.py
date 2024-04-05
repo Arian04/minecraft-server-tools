@@ -104,23 +104,28 @@ def fabric(
 ) -> int:
     API_ENDPOINT = "https://meta.fabricmc.net/v2"
 
-    # version check, optional
-    json_response = get_json(f"{API_ENDPOINT}/versions/game")
-    for obj in json_response:
-        if obj["stable"] is True and obj["version"] == mc_version:
+    # Check that the version is available
+    version_is_available = False
+    mc_version_list = get_json(f"{API_ENDPOINT}/versions/game")
+    for obj in mc_version_list:
+        if obj["version"] == mc_version:
             LOGGER.debug(f"mc version {mc_version} is valid")
+            version_is_available = True
             break
+    if not version_is_available:
+        LOGGER.error(f"version '{mc_version}' is not available :(")
+        return 1
 
     # get latest stable loader version
-    json_response = get_json(f"{API_ENDPOINT}/versions/loader")
-    loader_version = find_value_in_json(json_response, "version", ("stable", True))
+    loader_version_list = get_json(f"{API_ENDPOINT}/versions/loader")
+    loader_version = find_value_in_json(loader_version_list, "version", ("stable", True))
     if loader_version is None:
         LOGGER.error("couldn't get loader version")
         return 1
 
     # get latest stable installer version
-    json_response = get_json(f"{API_ENDPOINT}/versions/installer")
-    installer_version = find_value_in_json(json_response, "version", ("stable", True))
+    installer_version_list = get_json(f"{API_ENDPOINT}/versions/installer")
+    installer_version = find_value_in_json(installer_version_list, "version", ("stable", True))
     if installer_version is None:
         LOGGER.error("couldn't get installer version")
         return 1
@@ -138,7 +143,7 @@ def purpur(
     API_ENDPOINT = "https://api.purpurmc.org/v2/purpur"
 
     # Check that the version is available
-    version_list = get_json(f"{API_ENDPOINT}")["versions"]  # get list of available versions
+    version_list = get_json(f"{API_ENDPOINT}")["versions"]
     if mc_version not in version_list:
         LOGGER.error(f"version '{mc_version}' is not available :(")
         return 1
@@ -179,32 +184,28 @@ def velocity(
 
 
 # All PaperMC projects share the same implementation for downloading the jar
-def papermc(project: str, output_path: Path, version: str) -> int:
+def papermc(project: str, path: Path, version: str) -> int:
     API_ENDPOINT = "https://api.papermc.io/v2"
-
     PROXIES = {"velocity", "waterfall"}
+
+    version_list = get_json(f"{API_ENDPOINT}/projects/{project}")["versions"]
     if project in PROXIES and version is LATEST_PROXY_VERSION:
         # turn LATEST_PROXY_VERSION constant into the actual latest version
-        json_response = get_json(f"{API_ENDPOINT}/projects/{project}")
-        json_response = json_response["versions"]  # grab versions list
-        latest_version = json_response[-1]  # get the last element (latest version)
-        version = latest_version  # set desired version to latest version
+        version = version_list[-1]  # the last element is the latest version
     else:
         # Check that the version is available
-        json_response = get_json(f"{API_ENDPOINT}/projects/{project}")
-        json_response = json_response["versions"]  # we only care about the versions list
-        if version not in json_response:
+        if version not in version_list:
             LOGGER.error(f"version '{version}' is not available :(")
             return 1
 
     # Get latest non-experimental (stable) build for the given version
     build_json = None
-    json_response = get_json(f"{API_ENDPOINT}/projects/{project}/versions/{version}/builds")
+    builds_list = get_json(f"{API_ENDPOINT}/projects/{project}/versions/{version}/builds")["builds"]
 
     # Reverse the list because they provide it in "oldest first" order
-    for obj in reversed(json_response["builds"]):
-        if obj["channel"] == "default":
-            build_json = obj
+    for build in reversed(builds_list):
+        if build["channel"] == "default":
+            build_json = build
             break
 
     if build_json is None:
@@ -218,7 +219,7 @@ def papermc(project: str, output_path: Path, version: str) -> int:
     jar_url = (
         f"{API_ENDPOINT}/projects/{project}/versions/{version}/builds/{build_number}/downloads/{jar_name}"
     )
-    save_file_verify_sha256sum(jar_url, output_path, sha256sum)
+    save_file_verify_sha256sum(jar_url, path, sha256sum)
     return 0
 
 
