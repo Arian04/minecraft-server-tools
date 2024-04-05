@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import logging
 import sys
 from pathlib import Path
@@ -113,7 +114,9 @@ def purpur(
         LOGGER.error(f"version '{mc_version}' is not available :(")
         return 1
 
-    build_number = get_json(f"{API_ENDPOINT}/{mc_version}/latest")
+    latest_build_info = get_json(f"{API_ENDPOINT}/{mc_version}/latest")
+    build_number = latest_build_info["build"]
+    # md5sum = latest_build_info["md5"] # TODO: implement md5sum check
     jar_url = f"{API_ENDPOINT}/{mc_version}/{build_number}/download"
     save_file(jar_url, path)
     return 0
