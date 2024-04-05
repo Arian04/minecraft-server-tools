@@ -12,6 +12,7 @@ More comprehensive tools exist, but I wanted something much more minimal.
 	- easier to handle networking for multiple MC servers on a single host
 	- servers are more isolated. Ex: a Java update won't accidentally break another server running a version of Minecraft that requires a different Java version
 	- easier to move the MC server(s) to a different host if necessary, since dependencies are packaged nicely into the container image
-- server.properties is changed using simple environment variables, rather than having to manually change it
+	- updating the server jar is as easy as updating the container image
+- `server.properties` is changed using simple environment variables, rather than having to manually change it
 - simple incremental, compressed, and deduplicated backups via Borg by simply running a second lightweight container alongside the main server
 - provided [example docker-compose.yml](examples/docker-compose.yml) makes it easy to get started
