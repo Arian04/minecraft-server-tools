@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import hashlib
 import logging
 import sys
 from pathlib import Path
@@ -37,9 +38,37 @@ LATEST_PROXY_VERSION = "latest"
 
 
 # ----- Helper Functions -----
-def save_file(file_url: str, path: Path) -> None:
-    print(f"jar file will be downloaded from: {file_url}")
-    print(f"file will be written to: {path}")
+def save_file_verify_sha256sum(file_url: str, path: Path, checksum: str) -> None:
+    return save_file_verify_checksum(file_url, path, hashlib.sha256, checksum)
+
+
+def save_file_verify_md5sum(file_url: str, path: Path, checksum: str) -> None:
+    return save_file_verify_checksum(file_url, path, hashlib.md5, checksum)
+
+
+def save_file_verify_checksum(file_url: str, path: Path, hash_constructor, checksum: str) -> None:
+    LOGGER.info(f"jar file will be downloaded from: {file_url}")
+    LOGGER.info(f"file will be written to: {path}")
+
+    # download file
+    response = requests.get(file_url)
+
+    # verify checksum
+    calculated_hash = hash_constructor(response.content).hexdigest()
+    if calculated_hash != checksum:
+        LOGGER.error(
+            f"checksum verification failed, not writing file. expected '{checksum}', got '{calculated_hash}'"
+        )
+        sys.exit(1)
+
+    # write file
+    with open(path, "wb") as file:
+        file.write(response.content)
+
+
+def save_file_unsafe(file_url: str, path: Path) -> None:
+    LOGGER.info(f"jar file will be downloaded from: {file_url}")
+    LOGGER.info(f"file will be written to: {path}")
 
     response = requests.get(file_url)
     with open(path, "wb") as file:
@@ -79,7 +108,7 @@ def fabric(
     json_response = get_json(f"{API_ENDPOINT}/versions/game")
     for obj in json_response:
         if obj["stable"] is True and obj["version"] == mc_version:
-            print(f"mc version {mc_version} is valid")
+            LOGGER.debug(f"mc version {mc_version} is valid")
             break
 
     # get latest stable loader version
@@ -97,7 +126,7 @@ def fabric(
         return 1
 
     jar_url = f"{API_ENDPOINT}/versions/loader/{mc_version}/{loader_version}/{installer_version}/server/jar"
-    save_file(jar_url, path)
+    save_file_unsafe(jar_url, path)
     return 0
 
 
@@ -116,9 +145,9 @@ def purpur(
 
     latest_build_info = get_json(f"{API_ENDPOINT}/{mc_version}/latest")
     build_number = latest_build_info["build"]
-    # md5sum = latest_build_info["md5"] # TODO: implement md5sum check
+    md5sum = latest_build_info["md5"]
     jar_url = f"{API_ENDPOINT}/{mc_version}/{build_number}/download"
-    save_file(jar_url, path)
+    save_file_verify_md5sum(jar_url, path, md5sum)
     return 0
 
 
@@ -184,12 +213,12 @@ def papermc(project: str, output_path: Path, version: str) -> int:
 
     build_number = build_json["build"]
     jar_name = build_json["downloads"]["application"]["name"]
-    # jar_sha256 = build_json['downloads']['application']['sha256'] # TODO: implement checksum verification
+    sha256sum = build_json["downloads"]["application"]["sha256"]
 
     jar_url = (
         f"{API_ENDPOINT}/projects/{project}/versions/{version}/builds/{build_number}/downloads/{jar_name}"
     )
-    save_file(jar_url, output_path)
+    save_file_verify_sha256sum(jar_url, output_path, sha256sum)
     return 0
 
 
