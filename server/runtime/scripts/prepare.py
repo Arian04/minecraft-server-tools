@@ -9,6 +9,7 @@ import os
 import re
 import secrets
 import string
+import sys
 
 
 def set_eula():
@@ -107,10 +108,12 @@ def set_server_properties():
             file.write(f"{line}\n")
 
 
-def main():
+def main() -> int:
     set_eula()
     set_rcon_vars()
     set_server_properties()
+
+    return 0
 
 
 if __name__ == "__main__":
@@ -123,4 +126,4 @@ if __name__ == "__main__":
     LOGGER = logging.getLogger("mc_server_properties_editor")
     SERVER_DIRECTORY = "/data"
 
-    main()
+    sys.exit(main())

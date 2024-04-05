@@ -73,6 +73,8 @@ main() {
 	# Not doing all checks for `server.properties`, because I'm gonna let the preparation script handle it.
 	# Otherwise this would always just report that it doesn't match the default `server.properties`.
 	copy_if_missing "server.properties"
+
+	return 0
 }
 
 main "$@"
