@@ -2,7 +2,10 @@ name: Create and publish MC server Docker images
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - "main"
+    paths-ignore:
+      - "**.md"
 
 env:
   REGISTRY: ghcr.io
