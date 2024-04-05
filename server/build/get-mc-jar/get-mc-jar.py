@@ -107,11 +107,14 @@ def purpur(
 ) -> int:
     API_ENDPOINT = "https://api.purpurmc.org/v2/purpur"
 
-    # TODO: add check to make sure mc_version is valid
-    if False:
+    # Check that the version is available
+    version_list = get_json(f"{API_ENDPOINT}")["versions"]  # get list of available versions
+    if mc_version not in version_list:
+        LOGGER.error(f"version '{mc_version}' is not available :(")
         return 1
 
-    jar_url = f"{API_ENDPOINT}/{mc_version}/latest/download"
+    build_number = get_json(f"{API_ENDPOINT}/{mc_version}/latest")
+    jar_url = f"{API_ENDPOINT}/{mc_version}/{build_number}/download"
     save_file(jar_url, path)
     return 0
 
