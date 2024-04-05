@@ -98,7 +98,10 @@ ENV \
 	GENERATED_DATA_DIR=${GENERATED_DATA_DIR}
 
 # For users to override
-ENV MEMORY_AMOUNT="" EULA=""
+ENV \
+	MEMORY_AMOUNT="" \
+	EULA="" \
+	MANAGE_SERVER_JAR=true
 
 # set tini as PID 1 to avoid issues with signal propagation to child processes
 ENTRYPOINT ["/sbin/tini", "--"]

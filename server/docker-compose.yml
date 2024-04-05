@@ -1,6 +1,6 @@
 services:
   build_binary:
-    image: ghcr.io/arian04/minecraft-server:$MC_JAR_TYPE-$MC_VERSION
+    image: ghcr.io/arian04/minecraft-server:$MC_JAR_TYPE-$MC_VERSION-latest
     build:
       context: .
       dockerfile: ./Dockerfile

@@ -7,6 +7,7 @@ services:
       ENABLE_RCON: true # mandatory for backups to work
       #RCON_PASSWORD: EXAMPLE_PASSWORD # either set this or a strong password will be generated each time the container starts
       MEMORY_AMOUNT: "2G"
+      MANAGE_SERVER_JAR: true # you can set this to false if you want to use a custom jar, but that also means the jar won't update when you update the container image
     networks:
       - minecraft
     ports:
