@@ -96,8 +96,7 @@ main() {
 	run_rcon_cmd "save-off"
 
 	# Backs up server to borg repo
-	# TODO: see how --progress looks in logs and maybe remove it
-	borg create --progress ${BORG_REPO}::"${BORG_ARCHIVE_NAME}" "${SERVER_DIR}"
+	borg create --stats ${BORG_REPO}::"${BORG_ARCHIVE_NAME}" "${SERVER_DIR}"
 
 	# $? stores the exit code of the previous command, in this case, borg create
 	borg_result=$?
