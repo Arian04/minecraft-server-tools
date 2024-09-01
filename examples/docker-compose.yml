@@ -1,18 +1,28 @@
 services:
   minecraft-server:
     image: ghcr.io/arian04/minecraft-server:fabric-1.20.4-latest
-    user: "1000:1000"
     environment:
       EULA: true # you must accept Minecraft's EULA to run the server at all
-      ENABLE_RCON: true # mandatory for backups to work
+      ENABLE_RCON: true # must be enabled for backups to work
       #RCON_PASSWORD: EXAMPLE_PASSWORD # either set this or a strong password will be generated each time the container starts
-      MEMORY_AMOUNT: "2G"
+      MEMORY_AMOUNT: "4G"
       MANAGE_SERVER_JAR: true # you can set this to false if you want to use a custom jar, but that also means the jar won't update when you update the container image
     networks:
       - minecraft
+
+    # If you want to change server ports, only edit the port number on the LEFT side of the colon
     ports:
       - "25565:25565"
       - "25575:25575"
+
+    # Allow you to 'docker attach' to the server to run commands in the server console
+    stdin_open: true
+    tty: true
+
+    # Allows the processes within the container to increase their priority
+    cap_add:
+      - SYS_NICE
+
     volumes:
       - server-data:/data
     stop_grace_period: 120s
@@ -20,7 +30,6 @@ services:
 
   minecraft-backups:
     image: ghcr.io/arian04/minecraft-server-backup:latest # TODO: adjust tag eventually
-    #user: "1000:1000"
     environment:
       RCON_TARGET: minecraft-server # must match the service name of the server container above
     networks:
