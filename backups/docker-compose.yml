@@ -1,5 +1,5 @@
 services:
-  build_binary:
+  minecraft-server-backup:
     image: ghcr.io/arian04/minecraft-server-backup:latest
     build:
       context: .

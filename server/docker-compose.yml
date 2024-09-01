@@ -1,5 +1,5 @@
 services:
-  build_binary:
+  minecraft-server:
     image: ghcr.io/arian04/minecraft-server:$MC_JAR_TYPE-$MC_VERSION-latest
     build:
       context: .
