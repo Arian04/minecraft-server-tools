@@ -35,8 +35,9 @@ RUN \
 ##### Runtime #####
 FROM ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG}
 
-ARG UID=1000
 ENV BORG_BASE_DIR="/borg-base-dir"
+ENV USERNAME="backups"
+ENV UID=1000 GID=1000
 
 COPY --from=build --chmod=555 /src/mcrcon /bin
 
@@ -44,10 +45,14 @@ COPY --from=build --chmod=555 /src/mcrcon /bin
 # supercronic - cron
 RUN apk add --no-cache borgbackup=1.2.7-r0 supercronic
 
-# Create borg base directory with sticky-bit set so unprivileged user can use it
-RUN mkdir -m 1777 "${BORG_BASE_DIR}"
+RUN addgroup -g ${GID} -S ${USERNAME} && \
+	adduser -u ${UID} -G ${USERNAME} -s /bin/false -D -H -S ${USERNAME}
 
-USER "${UID}"
+# Create borg base directory for unprivileged user
+RUN mkdir -m 700 "${BORG_BASE_DIR}" && \
+	chown ${UID}:${GID} "${BORG_BASE_DIR}"
+
+USER "${USERNAME}"
 
 # TODO: modify the way this works to make the time period configurable with env vars
 COPY --chown="${UID}" --chmod=500 ./backup.sh /bin/backup.sh
