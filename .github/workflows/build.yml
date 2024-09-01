@@ -9,7 +9,7 @@ on:
       - "**.md"
 
 jobs:
-  build-and-push-server-image:
+  server-image:
     uses: ./.github/workflows/reusable-docker-compose-build-push.yml
     permissions:
       contents: read
@@ -36,7 +36,7 @@ jobs:
         type=raw,value=${{ matrix.mc_jar_type }}-${{ matrix.mc_version }}
         type=raw,value=${{ matrix.mc_jar_type }}-${{ matrix.mc_version }}-{{sha}}
 
-  build-and-push-backup-image:
+  backup-image:
     uses: ./.github/workflows/reusable-docker-compose-build-push.yml
     permissions:
       contents: read
