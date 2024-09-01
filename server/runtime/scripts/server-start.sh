@@ -10,12 +10,17 @@
 #: "${JVM_ARGS:?}"
 
 set_base_args() {
-	base_args='-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+AlwaysActAsServerClassMachine -XX:+AlwaysPreTouch -XX:+DisableExplicitGC -XX:+UseNUMA -XX:NmethodSweepActivity=1 -XX:ReservedCodeCacheSize=400M -XX:NonNMethodCodeHeapSize=12M -XX:ProfiledCodeHeapSize=194M -XX:NonProfiledCodeHeapSize=194M -XX:-DontCompileHugeMethods -XX:MaxNodeLimit=240000 -XX:NodeLimitFudgeFactor=8000 -XX:+UseVectorCmov -XX:+PerfDisableSharedMem -XX:+UseFastUnorderedTimeStamps -XX:+UseCriticalJavaThreadPriority -XX:ThreadPriorityPolicy=1 -XX:AllocatePrefetchStyle=3'
+	base_args='-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions \
+		-XX:+AlwaysActAsServerClassMachine -XX:NmethodSweepActivity=1 \
+		-XX:ReservedCodeCacheSize=400M -XX:NonNMethodCodeHeapSize=12M -XX:ProfiledCodeHeapSize=194M -XX:NonProfiledCodeHeapSize=194M \
+		-XX:-DontCompileHugeMethods -XX:MaxNodeLimit=240000 -XX:NodeLimitFudgeFactor=8000 \
+		-XX:+UseVectorCmov -XX:+PerfDisableSharedMem -XX:+UseFastUnorderedTimeStamps \
+		-XX:+UseCriticalJavaThreadPriority -XX:ThreadPriorityPolicy=1'
 }
 
 set_gc_args() {
 	# Using ZGC
-	gc_args='-XX:+UseZGC -XX:AllocatePrefetchStyle=1 -XX:-ZProactive'
+	gc_args='-XX:+UseZGC -XX:+ZGenerational -XX:+AlwaysPreTouch -XX:+DisableExplicitGC -XX:-ZProactive -XX:-ZUncommit'
 
 	# NOTE:
 	# According to source linked at the top of this file, set ConcGCThreads = 2 on CPUs with 2c/4t and [# cores - 2] on most other CPUs.
