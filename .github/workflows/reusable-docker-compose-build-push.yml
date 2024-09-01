@@ -6,7 +6,7 @@ on:
         default: .
         type: string
       build_args:
-        required: true
+        default: ""
         type: string
 
       # for pushing

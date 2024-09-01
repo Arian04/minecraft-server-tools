@@ -1,10 +1,10 @@
 # syntax = docker/dockerfile:1
 
 # image args
-ARG BUILDER_IMAGE
-ARG BUILDER_IMAGE_TAG
-ARG RUNNER_IMAGE
-ARG RUNNER_IMAGE_TAG
+ARG BUILDER_IMAGE=python
+ARG BUILDER_IMAGE_TAG=alpine3.19
+ARG RUNNER_IMAGE=eclipse-temurin
+ARG RUNNER_IMAGE_TAG=17-jre-alpine
 
 # constants
 ARG GENERATED_DATA_DIR=/opt/minecraft

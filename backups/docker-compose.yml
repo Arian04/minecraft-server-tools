@@ -4,9 +4,3 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      args:
-        # image
-        BUILDER_IMAGE: alpine
-        BUILDER_IMAGE_TAG: 3.19
-        RUNNER_IMAGE: alpine
-        RUNNER_IMAGE_TAG: 3.19

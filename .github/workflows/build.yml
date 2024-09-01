@@ -27,10 +27,6 @@ jobs:
     with:
       build_context: ./server
       build_args: |
-        BUILDER_IMAGE=python
-        BUILDER_IMAGE_TAG=alpine3.19
-        RUNNER_IMAGE=eclipse-temurin
-        RUNNER_IMAGE_TAG=17-jre-alpine
         MC_JAR_TYPE=${{ matrix.mc_jar_type }}
         MC_VERSION=${{ matrix.mc_version }}
       push_registry: ghcr.io
@@ -48,11 +44,6 @@ jobs:
 
     with:
       build_context: ./backups
-      build_args: |
-        BUILDER_IMAGE=alpine
-        BUILDER_IMAGE_TAG=3.19
-        RUNNER_IMAGE=alpine
-        RUNNER_IMAGE_TAG=3.19
       push_registry: ghcr.io
       push_image_name: ${{ github.repository_owner }}/minecraft-server-backup
       push_image_tags_metadata: |

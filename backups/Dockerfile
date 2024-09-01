@@ -1,9 +1,9 @@
 # syntax = docker/dockerfile:1
 
-ARG BUILDER_IMAGE
-ARG BUILDER_IMAGE_TAG
-ARG RUNNER_IMAGE
-ARG RUNNER_IMAGE_TAG
+ARG BUILDER_IMAGE=alpine
+ARG BUILDER_IMAGE_TAG=3.19
+ARG RUNNER_IMAGE=alpine
+ARG RUNNER_IMAGE_TAG=3.19
 
 ##### Build #####
 # build rcon client from source
