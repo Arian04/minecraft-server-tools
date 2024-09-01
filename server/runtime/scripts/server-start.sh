@@ -10,12 +10,7 @@
 #: "${JVM_ARGS:?}"
 
 set_base_args() {
-	base_args='-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions \
-		-XX:+AlwaysActAsServerClassMachine -XX:NmethodSweepActivity=1 \
-		-XX:ReservedCodeCacheSize=400M -XX:NonNMethodCodeHeapSize=12M -XX:ProfiledCodeHeapSize=194M -XX:NonProfiledCodeHeapSize=194M \
-		-XX:-DontCompileHugeMethods -XX:MaxNodeLimit=240000 -XX:NodeLimitFudgeFactor=8000 \
-		-XX:+UseVectorCmov -XX:+PerfDisableSharedMem -XX:+UseFastUnorderedTimeStamps \
-		-XX:+UseCriticalJavaThreadPriority -XX:ThreadPriorityPolicy=1'
+	base_args='-XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:+AlwaysActAsServerClassMachine -XX:NmethodSweepActivity=1 -XX:ReservedCodeCacheSize=400M -XX:NonNMethodCodeHeapSize=12M -XX:ProfiledCodeHeapSize=194M -XX:NonProfiledCodeHeapSize=194M -XX:-DontCompileHugeMethods -XX:MaxNodeLimit=240000 -XX:NodeLimitFudgeFactor=8000 -XX:+UseVectorCmov -XX:+PerfDisableSharedMem -XX:+UseFastUnorderedTimeStamps -XX:+UseCriticalJavaThreadPriority -XX:ThreadPriorityPolicy=1'
 }
 
 set_gc_args() {
