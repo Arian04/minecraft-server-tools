@@ -16,3 +16,11 @@ More comprehensive tools exist, but I wanted something much more minimal.
 - `server.properties` is changed using simple environment variables, rather than having to manually change it
 - simple incremental, compressed, and deduplicated backups via Borg by simply running a second lightweight container alongside the main server
 - provided [example docker-compose.yml](examples/docker-compose.yml) makes it easy to get started
+
+## Quickstart
+
+TODO
+
+## Usage Notes
+
+TODO
