@@ -36,6 +36,7 @@ RUN \
 FROM ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG}
 
 ARG UID=1000
+ENV BORG_BASE_DIR="/borg-base-dir"
 
 COPY --from=build --chmod=555 /src/mcrcon /bin
 
@@ -43,13 +44,8 @@ COPY --from=build --chmod=555 /src/mcrcon /bin
 # supercronic - cron
 RUN apk add --no-cache borgbackup=1.2.7-r0 supercronic
 
-# create non-root user and switch to it
-# ENV SERVICE_NAME="minecraft"
-# ENV UID=1001 GID=1001
-# RUN \
-# 	addgroup -g ${UID} -S ${SERVICE_NAME}; \
-# 	adduser -u ${GID} -G ${SERVICE_NAME} -s /bin/false -D -H -S ${SERVICE_NAME}
-# USER ${SERVICE_NAME}
+# Create borg base directory with sticky-bit set so unprivileged user can use it
+RUN mkdir -m 1777 "${BORG_BASE_DIR}"
 
 USER "${UID}"
 
