@@ -27,7 +27,7 @@ RUN pip install --no-cache-dir -r ./requirements.txt
 RUN ./get-mc-jar.py ${MC_JAR_TYPE} ${JAR_NAME} ${MC_VERSION}
 
 ##### Generate default config files #####
-FROM ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG} as builder_config
+FROM ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG} AS builder_config
 
 WORKDIR /build
 
