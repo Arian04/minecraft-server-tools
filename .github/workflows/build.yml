@@ -4,17 +4,13 @@ on:
   push:
     branches:
       - "main"
+      - "ci"
     paths-ignore:
       - "**.md"
 
-env:
-  REGISTRY: ghcr.io
-  SERVER_IMAGE_NAME: ${{ github.repository_owner }}/minecraft-server
-  BACKUP_IMAGE_NAME: ${{ github.repository_owner }}/minecraft-server-backup
-
 jobs:
   build-and-push-server-image:
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/reusable-docker-compose-build-push.yml
     permissions:
       contents: read
       packages: write
@@ -28,76 +24,37 @@ jobs:
         mc_version:
           - 1.20.4
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3.0.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5.5.1
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.SERVER_IMAGE_NAME }}
-          tags: |
-            type=raw,value=${{ matrix.mc_jar_type }}-${{ matrix.mc_version }}-latest
-            type=raw,value=${{ matrix.mc_jar_type }}-${{ matrix.mc_version }}-{{sha}}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5.1.0
-        with:
-          context: ./server
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            BUILDER_IMAGE=python
-            BUILDER_IMAGE_TAG=alpine3.19
-            RUNNER_IMAGE=eclipse-temurin
-            RUNNER_IMAGE_TAG=17-jre-alpine
-            MC_JAR_TYPE=${{ matrix.mc_jar_type }}
-            MC_VERSION=${{ matrix.mc_version }}
+    with:
+      build_context: ./server
+      build_args: |
+        BUILDER_IMAGE=python
+        BUILDER_IMAGE_TAG=alpine3.19
+        RUNNER_IMAGE=eclipse-temurin
+        RUNNER_IMAGE_TAG=17-jre-alpine
+        MC_JAR_TYPE=${{ matrix.mc_jar_type }}
+        MC_VERSION=${{ matrix.mc_version }}
+      push_registry: ghcr.io
+      push_image_name: ${{ github.repository_owner }}/minecraft-server
+      push_image_tags_metadata: |
+        type=raw,value=${{ matrix.mc_jar_type }}-${{ matrix.mc_version }}-latest
+        type=raw,value=${{ matrix.mc_jar_type }}-${{ matrix.mc_version }}
+        type=raw,value=${{ matrix.mc_jar_type }}-${{ matrix.mc_version }}-{{sha}}
 
   build-and-push-backup-image:
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/reusable-docker-compose-build-push.yml
     permissions:
       contents: read
       packages: write
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3.0.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5.5.1
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.BACKUP_IMAGE_NAME }}
-          tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=raw,value={{sha}}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5.1.0
-        with:
-          context: ./backups
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            BUILDER_IMAGE=alpine
-            BUILDER_IMAGE_TAG=3.19
-            RUNNER_IMAGE=alpine
-            RUNNER_IMAGE_TAG=3.19
+    with:
+      build_context: ./backups
+      build_args: |
+        BUILDER_IMAGE=alpine
+        BUILDER_IMAGE_TAG=3.19
+        RUNNER_IMAGE=alpine
+        RUNNER_IMAGE_TAG=3.19
+      push_registry: ghcr.io
+      push_image_name: ${{ github.repository_owner }}/minecraft-server-backup
+      push_image_tags_metadata: |
+        type=raw,value=latest,enable={{is_default_branch}}
+        type=raw,value={{sha}}
