@@ -7,10 +7,10 @@
 # - broadcasts an announcement to the server
 
 error() {
-	echo >&2 "ERROR:" "$@"
+	echo >&2 "$@"
 }
 info() {
-	echo "INFO:" "$@"
+	echo "$@"
 }
 
 run_rcon_cmd() {

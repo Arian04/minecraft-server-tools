@@ -12,7 +12,7 @@ FROM ${BUILDER_IMAGE}:${BUILDER_IMAGE_TAG} AS build
 ARG GIT_REPO_URL="https://github.com/Tiiffi/mcrcon"
 ARG COMMIT_SHA="b5951e96349ec2ecf72b468459fc503a7067ba1f"
 ARG ZIP_URL="${GIT_REPO_URL}/archive/${COMMIT_SHA}.zip"
-ARG EXPECTED_SHA512="887b2a6147605a03a807548aa77790ee9341139e9b047414311d0216e8c67d21f02681eb438b3e6ad6b12a92703e1dc49304a35d1fafdda7fd0e2659b1d58a27"
+ARG EXPECTED_SHA256="04ed40ee90350e19c80643a37a499cd03c5c8d0d7b1342e43b56ac62de1db1de"
 
 WORKDIR /src
 
@@ -22,11 +22,8 @@ RUN apk add --no-cache \
 	clang
 
 # Get source, verify against the expected checksum, and extract
-RUN \
-	wget -q ${ZIP_URL} -O source.zip; \
-	echo "${EXPECTED_SHA512}  source.zip" > checksum.txt; \
-	sha512sum -c -s checksum.txt; \
-	unzip source.zip
+ADD --checksum="sha256:${EXPECTED_SHA256}" "${ZIP_URL}" source.zip
+RUN unzip source.zip
 
 WORKDIR /src/mcrcon-${COMMIT_SHA}
 
@@ -40,9 +37,9 @@ FROM ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG}
 
 COPY --from=build --chmod=555 /src/mcrcon /bin
 
-# tini - init
 # borgbackup - backup software
-RUN apk add --no-cache tini borgbackup=1.2.7-r0
+# supercronic - cron
+RUN apk add --no-cache borgbackup=1.2.7-r0 supercronic
 
 # create non-root user and switch to it
 # ENV SERVICE_NAME="minecraft"
@@ -53,11 +50,11 @@ RUN apk add --no-cache tini borgbackup=1.2.7-r0
 # USER ${SERVICE_NAME}
 
 # TODO: modify the way this works to make the time period configurable with env vars
-COPY --chmod=500 ./backup.sh /etc/periodic/hourly/backup.sh
+COPY --chmod=500 ./backup.sh /bin/backup.sh
+COPY crontab /etc/crontab
 
 VOLUME [ "/data" ]
 VOLUME [ "/backups" ]
 WORKDIR /backups
 
-ENTRYPOINT ["/sbin/tini", "--"]
-CMD [ "crond", "-f", "-d6", "-l8" ]
+CMD [ "supercronic", "/etc/crontab" ]
