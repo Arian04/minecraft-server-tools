@@ -43,7 +43,7 @@ COPY --from=build --chmod=555 /src/mcrcon /bin
 
 # borgbackup - backup software
 # supercronic - cron
-RUN apk add --no-cache borgbackup=1.2.7-r0 supercronic
+RUN apk add --no-cache borgbackup supercronic
 
 RUN addgroup -g ${GID} -S ${USERNAME} && \
 	adduser -u ${UID} -G ${USERNAME} -s /bin/false -D -H -S ${USERNAME}
