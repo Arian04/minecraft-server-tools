@@ -35,6 +35,8 @@ RUN \
 ##### Runtime #####
 FROM ${RUNNER_IMAGE}:${RUNNER_IMAGE_TAG}
 
+ARG UID=1000
+
 COPY --from=build --chmod=555 /src/mcrcon /bin
 
 # borgbackup - backup software
@@ -49,8 +51,10 @@ RUN apk add --no-cache borgbackup=1.2.7-r0 supercronic
 # 	adduser -u ${GID} -G ${SERVICE_NAME} -s /bin/false -D -H -S ${SERVICE_NAME}
 # USER ${SERVICE_NAME}
 
+USER "${UID}"
+
 # TODO: modify the way this works to make the time period configurable with env vars
-COPY --chmod=500 ./backup.sh /bin/backup.sh
+COPY --chown="${UID}" --chmod=500 ./backup.sh /bin/backup.sh
 COPY crontab /etc/crontab
 
 VOLUME [ "/data" ]
