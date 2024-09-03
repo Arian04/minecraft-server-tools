@@ -35,16 +35,20 @@ set_extra_args() {
 }
 
 main() {
-	set_base_args
+	if [ -z "$JVM_ARGS_OVERRIDE" ]; then
+		set_base_args
 
-	set_gc_args
+		set_gc_args
 
-	set_extra_args
+		set_extra_args
 
-	# adds module for better performance on (I think) papermc servers and their forks
-	module_args="--add-modules=jdk.incubator.vector"
+		# adds module for better performance on (I think) papermc servers and their forks
+		module_args="--add-modules=jdk.incubator.vector"
 
-	jvm_args="${module_args} ${base_args} ${gc_args} ${extra_args}"
+		jvm_args="${module_args} ${base_args} ${gc_args} ${extra_args}"
+	else
+		jvm_args="$JVM_ARGS_OVERRIDE"
+	fi
 
 	# start server
 	# shellcheck disable=SC2086 # ${jvm_args} word-splitting is intentional
