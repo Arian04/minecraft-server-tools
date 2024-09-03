@@ -15,11 +15,15 @@ More comprehensive tools exist, but I wanted something much more minimal.
 	- updating the server jar is as easy as updating the container image
 - `server.properties` is changed using simple environment variables, rather than having to manually change it
 - simple incremental, compressed, and deduplicated backups via Borg by simply running a second lightweight container alongside the main server
-- provided [example docker-compose.yml](examples/docker-compose.yml) makes it easy to get started
 
 ## Quickstart
 
-TODO
+1. Download the files in the [examples/] subdirectory of this repo
+2. Edit the `.env` file to your liking. Advanced users may wish to also edit the `docker-compose.yml` file.
+3. run `docker compose up -d` while in the same directory as those files.
+
+That's it! You should also probably take a quick look at the logs to make sure things are running
+properly using the command `docker compose logs`.
 
 ## Usage Notes
 
